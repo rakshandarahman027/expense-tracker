@@ -26,10 +26,22 @@
       margin-top: 32px;
     }
 
-    .total {
-      font-size: 28px;
-      font-weight: bold;
+    .totals {
+      display: flex;
+      gap: 32px;
       margin: 20px 0;
+    }
+
+    .total {
+      font-size: 24px;
+      font-weight: bold;
+    }
+
+    .total-label {
+      display: block;
+      font-size: 14px;
+      font-weight: normal;
+      margin-bottom: 4px;
     }
 
     form {
@@ -50,6 +62,10 @@
       color: white;
       border: none;
       cursor: pointer;
+    }
+
+    .filter {
+      margin-bottom: 16px;
     }
 
     .expense {
@@ -73,8 +89,16 @@
 
   <h1>Expense Tracker</h1>
 
-  <div class="total">
-    Total: $<span id="total">0.00</span>
+  <div class="totals">
+    <div class="total">
+      <span class="total-label">All-time total</span>
+      $<span id="total">0.00</span>
+    </div>
+
+    <div class="total">
+      <span class="total-label">This month</span>
+      $<span id="month-total">0.00</span>
+    </div>
   </div>
 
   <form id="expense-form">
@@ -104,6 +128,19 @@
   </form>
 
   <h2>Expenses</h2>
+
+  <div class="filter">
+    <select id="payment-filter">
+      <option>All methods</option>
+      <option>Cash</option>
+      <option>Octopus</option>
+      <option>Alipay</option>
+      <option>Mastercard</option>
+      <option>Visa</option>
+      <option>Other</option>
+    </select>
+  </div>
+
   <div id="expense-list"></div>
 
   <script>
@@ -117,8 +154,10 @@
     const paymentInput = document.getElementById("payment-method");
     const categoryInput = document.getElementById("category");
     const noteInput = document.getElementById("note");
+    const paymentFilter = document.getElementById("payment-filter");
     const expenseList = document.getElementById("expense-list");
     const totalElement = document.getElementById("total");
+    const monthTotalElement = document.getElementById("month-total");
 
     // Get today's date using the local timezone.
     function getLocalDate() {
@@ -130,15 +169,41 @@
       return `${year}-${month}-${day}`;
     }
 
-    // Display all expenses and the total.
+    // Display expenses and update both totals.
     function renderExpenses() {
       expenseList.innerHTML = "";
 
       let total = 0;
+      let monthTotal = 0;
+
+      const today = new Date();
+      const currentYear = today.getFullYear();
+      const currentMonth = String(today.getMonth() + 1).padStart(2, "0");
+
+      const selectedMethod = paymentFilter.value;
 
       expenses.forEach(expense => {
-        total += Number(expense.amount);
+        const amount = Number(expense.amount);
 
+        total += amount;
+
+        // Calculate this month's total from all expenses.
+        if (
+          expense.date.startsWith(`${currentYear}-${currentMonth}`)
+        ) {
+          monthTotal += amount;
+        }
+      });
+
+      // Filter only the rows shown in the list.
+      const filteredExpenses = expenses.filter(expense => {
+        return (
+          selectedMethod === "All methods" ||
+          expense.paymentMethod === selectedMethod
+        );
+      });
+
+      filteredExpenses.forEach(expense => {
         const expenseElement = document.createElement("div");
         expenseElement.className = "expense";
 
@@ -154,6 +219,7 @@
       });
 
       totalElement.textContent = total.toFixed(2);
+      monthTotalElement.textContent = monthTotal.toFixed(2);
     }
 
     // Add a new expense.
@@ -175,6 +241,9 @@
       form.reset();
       renderExpenses();
     });
+
+    // Change which expenses are shown.
+    paymentFilter.addEventListener("change", renderExpenses);
 
     // Show saved expenses when the page opens.
     renderExpenses();
