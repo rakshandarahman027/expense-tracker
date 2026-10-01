@@ -1,4 +1,3 @@
-```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -71,8 +70,69 @@
       margin: 0;
     }
 
-    .filter {
-      margin-bottom: 16px;
+    .calendar {
+      margin-top: 32px;
+    }
+
+    .calendar-title {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .calendar-title h2 {
+      margin: 0;
+    }
+
+    .calendar-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 4px;
+    }
+
+    .weekday {
+      text-align: center;
+      font-weight: bold;
+      font-size: 13px;
+      padding: 8px 2px;
+    }
+
+    .day {
+      min-height: 70px;
+      border: 1px solid #ddd;
+      padding: 6px;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 6px;
+      overflow: hidden;
+    }
+
+    .day-number {
+      font-weight: bold;
+      font-size: 14px;
+    }
+
+    .day-badge {
+      font-size: 11px;
+      background: #eee;
+      padding: 3px 5px;
+      border-radius: 4px;
+      white-space: nowrap;
+      max-width: 100%;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .day-badge.high {
+      background: #ffd6d6;
+      color: #b00000;
+      font-weight: bold;
+    }
+
+    .empty-day {
+      min-height: 70px;
     }
 
     .summary {
@@ -84,6 +144,10 @@
       border-bottom: 1px solid #ddd;
       display: flex;
       justify-content: space-between;
+    }
+
+    .filter {
+      margin-bottom: 16px;
     }
 
     .expense {
@@ -105,6 +169,46 @@
     .clear-button {
       margin-top: 24px;
       background: #c00;
+    }
+
+    @media (max-width: 500px) {
+      body {
+        padding: 16px;
+      }
+
+      .totals {
+        gap: 16px;
+      }
+
+      .total {
+        font-size: 20px;
+      }
+
+      .calendar-grid {
+        gap: 2px;
+      }
+
+      .day {
+        min-height: 62px;
+        padding: 4px;
+      }
+
+      .empty-day {
+        min-height: 62px;
+      }
+
+      .weekday {
+        font-size: 11px;
+      }
+
+      .day-number {
+        font-size: 13px;
+      }
+
+      .day-badge {
+        font-size: 9px;
+        padding: 2px 3px;
+      }
     }
   </style>
 </head>
@@ -152,6 +256,14 @@
     <p id="error-message" class="error"></p>
   </form>
 
+  <div class="calendar">
+    <div class="calendar-title">
+      <h2>October 2026</h2>
+    </div>
+
+    <div class="calendar-grid" id="calendar"></div>
+  </div>
+
   <h2>Summary by payment method</h2>
   <div id="summary" class="summary"></div>
 
@@ -194,6 +306,7 @@
     const errorMessage = document.getElementById("error-message");
     const summaryElement = document.getElementById("summary");
     const clearAllButton = document.getElementById("clear-all");
+    const calendarElement = document.getElementById("calendar");
 
     // Get today's date using the local timezone.
     function getLocalDate() {
@@ -203,6 +316,62 @@
       const day = String(now.getDate()).padStart(2, "0");
 
       return `${year}-${month}-${day}`;
+    }
+
+    // Display the October 2026 calendar.
+    function renderCalendar() {
+      calendarElement.innerHTML = "";
+
+      const weekdays = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+
+      weekdays.forEach(day => {
+        const weekdayElement = document.createElement("div");
+        weekdayElement.className = "weekday";
+        weekdayElement.textContent = day;
+        calendarElement.appendChild(weekdayElement);
+      });
+
+      // October 1, 2026 is Thursday.
+      const firstDayOffset = 3;
+      const daysInMonth = 31;
+
+      // Add empty cells before October 1.
+      for (let i = 0; i < firstDayOffset; i++) {
+        const emptyDay = document.createElement("div");
+        emptyDay.className = "empty-day";
+        calendarElement.appendChild(emptyDay);
+      }
+
+      for (let day = 1; day <= daysInMonth; day++) {
+        const dayElement = document.createElement("div");
+        dayElement.className = "day";
+
+        const dayNumber = document.createElement("div");
+        dayNumber.className = "day-number";
+        dayNumber.textContent = day;
+
+        dayElement.appendChild(dayNumber);
+
+        const date = `2026-10-${String(day).padStart(2, "0")}`;
+
+        const dayTotal = expenses
+          .filter(expense => expense.date === date)
+          .reduce((total, expense) => total + Number(expense.amount), 0);
+
+        if (dayTotal > 0) {
+          const badge = document.createElement("div");
+          badge.className = "day-badge";
+
+          if (dayTotal > 100) {
+            badge.classList.add("high");
+          }
+
+          badge.textContent = `$${dayTotal.toFixed(2)}`;
+          dayElement.appendChild(badge);
+        }
+
+        calendarElement.appendChild(dayElement);
+      }
     }
 
     // Display expenses and update all totals and the summary.
@@ -284,6 +453,8 @@
 
       totalElement.textContent = total.toFixed(2);
       monthTotalElement.textContent = monthTotal.toFixed(2);
+
+      renderCalendar();
     }
 
     // Add a new expense.
@@ -335,4 +506,3 @@
 
 </body>
 </html>
-```
