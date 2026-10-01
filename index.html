@@ -14,7 +14,7 @@
       font-family: Arial, sans-serif;
       margin: 0;
       padding: 24px;
-      background: #b5beaa;
+      background: #6e6a5c;
       color: #2d3e35;
     }
 
@@ -166,7 +166,7 @@
     }
 
     button {
-      background: #6e6a5c;
+      background: #2d3e35;
       color: #e6e2d3;
       border: none;
       cursor: pointer;
@@ -266,7 +266,7 @@
     .calendar-nav {
       width: auto;
       padding: 8px 14px;
-      background: #6e6a5c;
+      background: #2d3e35;
       color: #e6e2d3;
       border-radius: 8px;
       font-size: 18px;
@@ -284,9 +284,11 @@
     .weekday {
       padding: 8px 2px;
       text-align: center;
+      background: rgba(181, 190, 170, 0.35);
       color: #2d3e35;
       font-size: 13px;
       font-weight: bold;
+      border-radius: 4px;
     }
 
     .day {
@@ -297,13 +299,13 @@
       align-items: flex-start;
       gap: 6px;
       overflow: hidden;
-      background: #e6e2d3;
+      background: #b5beaa;
       border: 1px solid #6e6a5c;
       border-radius: 6px;
     }
 
     .day.today {
-      background: #d8dec9;
+      background: #9eab8e;
     }
 
     .day-number {
@@ -397,7 +399,7 @@
       flex-shrink: 0;
       padding: 4px 8px;
       background: transparent;
-      color: #6e6a5c;
+      color: #2d3e35;
       border: 1px solid #6e6a5c;
       font-size: 14px;
     }
@@ -895,6 +897,12 @@
         dayElement.appendChild(dayNumber);
 
         const date = `${year}-${String(month + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
+
+        const today = getLocalDate();
+
+        if (date === today) {
+          dayElement.classList.add("today");
+        }
 
         const dayTotal = expenses
           .filter(expense => expense.date === date)
