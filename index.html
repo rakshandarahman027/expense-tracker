@@ -1,4 +1,4 @@
-```html
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -15,7 +15,7 @@
       font-family: Arial, sans-serif;
       margin: 0;
       padding: 24px;
-      background: #2f4858;
+      background: #8fb3c0;
       color: #2b2b2b;
     }
 
@@ -23,25 +23,63 @@
       max-width: 700px;
       margin: 0 auto;
       padding: 24px;
-      background: #fffaf0;
+      background: #fdfaf2;
       border-radius: 16px;
-      box-shadow: 0 8px 28px rgba(0, 0, 0, 0.18);
+      box-shadow:
+        0 8px 28px rgba(48, 67, 73, 0.18),
+        inset 0 1px 0 rgba(255, 255, 255, 0.8);
     }
 
     h1 {
-      margin: 0 0 24px;
-      padding: 0 0 10px;
+      position: relative;
+      margin: 0 0 28px;
+      padding: 18px 18px 14px 52px;
       font-size: 32px;
-      color: #3f6b4d;
-      border-bottom: 3px solid #8b6f47;
+      color: #6b4f2c;
+      background: linear-gradient(
+        90deg,
+        #e5ecd9 0%,
+        #f2ead8 55%,
+        rgba(242, 234, 216, 0.35) 100%
+      );
+      border-radius: 12px;
+      border-bottom: 3px solid #a68963;
+      overflow: visible;
+    }
+
+    /* Small decorative leaf/tree symbol */
+    h1::before {
+      content: "❧";
+      position: absolute;
+      left: 18px;
+      top: 50%;
+      transform: translateY(-53%);
+      font-size: 25px;
+      color: #8ba888;
+      line-height: 1;
+    }
+
+    h1::after {
+      content: "•  •  •";
+      position: absolute;
+      left: 50%;
+      bottom: -23px;
+      transform: translateX(-50%);
+      color: #a3b899;
+      font-size: 11px;
+      letter-spacing: 2px;
+      white-space: nowrap;
+      background: #fdfaf2;
+      padding: 0 10px;
     }
 
     h2 {
       margin-top: 32px;
-      color: #2b2b2b;
+      color: #3f6b4d;
     }
 
     .tabs {
+      position: relative;
       display: flex;
       border-bottom: 1px solid #e0d8c8;
       margin-bottom: 24px;
@@ -56,12 +94,25 @@
       padding: 12px 8px;
       font-size: 16px;
       font-weight: normal;
+      transition:
+        background 0.2s ease,
+        color 0.2s ease;
+    }
+
+    .tab-button:hover {
+      background: #eef3e9;
+      color: #5d765c;
     }
 
     .tab-button.active {
-      color: #3f6b4d;
+      color: #8ba888;
       font-weight: bold;
-      border-bottom-color: #3f6b4d;
+      border-bottom-color: #8ba888;
+      background: transparent;
+    }
+
+    .tab-button.active:hover {
+      background: transparent;
     }
 
     .tab-content {
@@ -82,7 +133,7 @@
       flex: 1;
       padding: 18px;
       background: #f7f3eb;
-      border: 1px solid #8b6f47;
+      border: 1px solid #a68963;
       border-radius: 10px;
       font-size: 24px;
       font-weight: bold;
@@ -90,10 +141,12 @@
 
     .total:first-child {
       background: #eef3e9;
+      border-color: #a3b899;
     }
 
     .total:last-child {
       background: #f5ead8;
+      border-color: #a68963;
     }
 
     .total-label {
@@ -120,23 +173,26 @@
 
     input,
     select {
-      background: #fffaf0;
+      background: #fdfaf2;
       color: #2b2b2b;
-      border: 1px solid #8b6f47;
+      border: 1px solid #a68963;
     }
 
     input:focus,
     select:focus {
       outline: none;
-      border-color: #3f6b4d;
-      box-shadow: 0 0 0 2px rgba(63, 107, 77, 0.15);
+      border-color: #8ba888;
+      box-shadow: 0 0 0 2px rgba(139, 168, 136, 0.18);
     }
 
     button {
-      background: #8b6f47;
+      background: #a68963;
       color: #fffaf0;
       border: none;
       cursor: pointer;
+      transition:
+        filter 0.2s ease,
+        background 0.2s ease;
     }
 
     button:hover {
@@ -150,18 +206,29 @@
     }
 
     .budget {
+      position: relative;
       margin-top: 20px;
       padding: 16px;
-      background: #fffaf0;
+      background: #f7f3eb;
       border: 1px solid #e0d8c8;
-      border-left: 4px solid #3f6b4d;
+      border-left: 4px solid #8ba888;
       border-radius: 10px;
+    }
+
+    .budget::before {
+      content: "●";
+      position: absolute;
+      left: 15px;
+      top: 15px;
+      color: #a3b899;
+      font-size: 9px;
     }
 
     .budget h2 {
       margin: 0 0 12px;
+      padding-left: 15px;
       font-size: 20px;
-      color: #2b2b2b;
+      color: #3f6b4d;
     }
 
     .budget-input {
@@ -174,6 +241,14 @@
     .budget-input label {
       font-size: 14px;
       white-space: nowrap;
+    }
+
+    .budget-input label::before {
+      content: "●";
+      color: #a3b899;
+      font-size: 9px;
+      margin-right: 6px;
+      vertical-align: middle;
     }
 
     .budget-input input {
@@ -219,7 +294,7 @@
       width: auto;
       padding: 8px 14px;
       font-size: 18px;
-      background: #8b6f47;
+      background: #a68963;
       color: #fffaf0;
       border-radius: 8px;
     }
@@ -238,19 +313,19 @@
       font-weight: bold;
       font-size: 13px;
       padding: 8px 2px;
-      color: #3f6b4d;
+      color: #8ba888;
     }
 
     .day {
       min-height: 70px;
-      border: 1px solid #b8aa93;
+      border: 1px solid #d6c9b6;
       padding: 6px;
       display: flex;
       flex-direction: column;
       align-items: flex-start;
       gap: 6px;
       overflow: hidden;
-      background: #fffaf0;
+      background: #fffdf8;
       border-radius: 6px;
     }
 
@@ -262,7 +337,7 @@
 
     .day-badge {
       font-size: 11px;
-      background: #3f6b4d;
+      background: #8ba888;
       color: #fffaf0;
       padding: 3px 5px;
       border-radius: 4px;
@@ -292,7 +367,7 @@
       border-bottom: 1px solid #e0d8c8;
       display: flex;
       justify-content: space-between;
-      background: #fffaf0;
+      background: #fffdf8;
     }
 
     .summary-item:nth-child(even) {
@@ -316,7 +391,7 @@
       justify-content: space-between;
       gap: 12px;
       align-items: flex-start;
-      background: #fffaf0;
+      background: #fffdf8;
     }
 
     .expense:nth-child(even) {
@@ -344,8 +419,8 @@
       width: auto;
       padding: 4px 8px;
       background: transparent;
-      color: #8b6f47;
-      border: 1px solid #8b6f47;
+      color: #8b765d;
+      border: 1px solid #a68963;
       font-size: 14px;
       flex-shrink: 0;
     }
@@ -385,7 +460,17 @@
 
       h1 {
         font-size: 28px;
-        margin-bottom: 20px;
+        margin-bottom: 28px;
+        padding: 16px 14px 12px 46px;
+      }
+
+      h1::before {
+        left: 14px;
+        font-size: 22px;
+      }
+
+      h1::after {
+        bottom: -22px;
       }
 
       .tabs {
@@ -579,12 +664,10 @@
 
       <div class="filter">
 
-        <!-- Month filter -->
         <select id="month-filter">
           <option value="all">All months</option>
         </select>
 
-        <!-- Week filter -->
         <select id="week-filter">
           <option value="all">All weeks</option>
           <option value="1">Week 1 (1–7)</option>
@@ -594,7 +677,6 @@
           <option value="5">Week 5 (29–31)</option>
         </select>
 
-        <!-- Existing payment filter -->
         <select id="payment-filter">
           <option>All methods</option>
           <option>Cash</option>
@@ -605,7 +687,6 @@
           <option>Other</option>
         </select>
 
-        <!-- Existing category filter -->
         <select id="category-filter">
           <option>All categories</option>
           <option>Food</option>
@@ -634,14 +715,12 @@
     const STORAGE_KEY = "expenseTracker.v1";
     const BUDGET_KEY = "expenseTracker.budget";
 
-    // Load saved expenses and remove invalid old entries.
     let savedExpenses = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
 
     let expenses = savedExpenses.filter(expense => {
       return Number.isFinite(Number(expense.amount)) && Number(expense.amount) > 0;
     });
 
-    // Load the saved monthly budget.
     let budget = Number(localStorage.getItem(BUDGET_KEY)) || 0;
 
     const form = document.getElementById("expense-form");
@@ -668,7 +747,6 @@
     const nextMonthButton = document.getElementById("next-month");
     const budgetInput = document.getElementById("budget-input");
 
-    // Get today's date using local time.
     function getLocalDate() {
       const now = new Date();
       const year = now.getFullYear();
@@ -681,11 +759,9 @@
     dateInput.value = getLocalDate();
     budgetInput.value = budget || "";
 
-    // The calendar starts on the current local month.
     let calendarDate = new Date();
     calendarDate.setDate(1);
 
-    // Get a readable month and year.
     function getMonthTitle(date) {
       return date.toLocaleString("en-US", {
         month: "long",
@@ -693,7 +769,6 @@
       });
     }
 
-    // Get total spending for a specific month.
     function getMonthSpent(year, month) {
       const monthString = String(month + 1).padStart(2, "0");
 
@@ -704,30 +779,24 @@
         .reduce((total, expense) => total + Number(expense.amount), 0);
     }
 
-    // Rebuild the month filter from the current expenses.
     function renderMonthFilter() {
       const currentSelection = monthFilter.value;
 
-      // Get unique YYYY-MM values from expenses.
       const uniqueMonths = [...new Set(
         expenses
           .map(expense => expense.date.substring(0, 7))
           .filter(month => /^\d{4}-\d{2}$/.test(month))
       )];
 
-      // Sort newest first.
       uniqueMonths.sort((a, b) => b.localeCompare(a));
 
-      // Clear the existing options.
       monthFilter.innerHTML = "";
 
-      // Always keep All months first.
       const allOption = document.createElement("option");
       allOption.value = "all";
       allOption.textContent = "All months";
       monthFilter.appendChild(allOption);
 
-      // Add each month that actually exists.
       uniqueMonths.forEach(month => {
         const option = document.createElement("option");
         option.value = month;
@@ -748,7 +817,6 @@
         monthFilter.appendChild(option);
       });
 
-      // Preserve the current selection if it still exists.
       if (currentSelection !== "all" && uniqueMonths.includes(currentSelection)) {
         monthFilter.value = currentSelection;
       } else {
@@ -756,7 +824,6 @@
       }
     }
 
-    // Update budget information for the currently viewed calendar month.
     function renderBudget() {
       const year = calendarDate.getFullYear();
       const month = calendarDate.getMonth();
@@ -798,7 +865,6 @@
       });
     }
 
-    // Build the calendar.
     function renderCalendar() {
       calendarElement.innerHTML = "";
 
@@ -816,20 +882,17 @@
         calendarElement.appendChild(weekdayElement);
       });
 
-      // Convert JavaScript's Sunday = 0 into Monday = 0.
       const firstDay = new Date(year, month, 1).getDay();
       const firstDayOffset = (firstDay + 6) % 7;
 
       const daysInMonth = new Date(year, month + 1, 0).getDate();
 
-      // Empty cells before the first day.
       for (let i = 0; i < firstDayOffset; i++) {
         const emptyDay = document.createElement("div");
         emptyDay.className = "empty-day";
         calendarElement.appendChild(emptyDay);
       }
 
-      // Day cells.
       for (let day = 1; day <= daysInMonth; day++) {
         const dayElement = document.createElement("div");
         dayElement.className = "day";
@@ -862,21 +925,18 @@
       }
     }
 
-    // Move the calendar backward one month.
     previousMonthButton.addEventListener("click", function() {
       calendarDate.setMonth(calendarDate.getMonth() - 1);
       renderCalendar();
       renderBudget();
     });
 
-    // Move the calendar forward one month.
     nextMonthButton.addEventListener("click", function() {
       calendarDate.setMonth(calendarDate.getMonth() + 1);
       renderCalendar();
       renderBudget();
     });
 
-    // Update totals, summary, and history.
     function renderExpenses() {
       expenseList.innerHTML = "";
 
@@ -909,7 +969,6 @@
         paymentTotals[expense.paymentMethod] += amount;
       });
 
-      // Summary always uses all expenses.
       const sortedPayments = Object.entries(paymentTotals)
         .sort((a, b) => b[1] - a[1]);
 
@@ -931,14 +990,11 @@
         });
       }
 
-      // Filters combine using AND.
       const filteredExpenses = expenses.filter(expense => {
-        // Month filter.
         const monthMatches =
           selectedMonth === "all" ||
           expense.date.startsWith(selectedMonth);
 
-        // Week filter based only on day of month.
         const day = Number(expense.date.substring(8, 10));
 
         let weekMatches = true;
@@ -959,12 +1015,10 @@
           }
         }
 
-        // Payment filter.
         const paymentMatches =
           selectedPayment === "All methods" ||
           expense.paymentMethod === selectedPayment;
 
-        // Category filter.
         const categoryMatches =
           selectedCategory === "All categories" ||
           expense.category === selectedCategory;
@@ -1014,7 +1068,6 @@
                 JSON.stringify(expenses)
               );
 
-              // Rebuild month options before rendering the filtered list.
               renderMonthFilter();
               renderExpenses();
             }
@@ -1029,12 +1082,10 @@
       totalElement.textContent = total.toFixed(2);
       monthTotalElement.textContent = monthTotal.toFixed(2);
 
-      // Calendar and budget always use all expenses.
       renderCalendar();
       renderBudget();
     }
 
-    // Add a new expense.
     form.addEventListener("submit", function(event) {
       event.preventDefault();
 
@@ -1070,24 +1121,15 @@
       dateInput.value = getLocalDate();
       errorMessage.textContent = "";
 
-      // Rebuild the month list because a new month may now exist.
       renderMonthFilter();
       renderExpenses();
     });
 
-    // Month filter.
     monthFilter.addEventListener("change", renderExpenses);
-
-    // Week filter.
     weekFilter.addEventListener("change", renderExpenses);
-
-    // Payment filter.
     paymentFilter.addEventListener("change", renderExpenses);
-
-    // Category filter.
     categoryFilter.addEventListener("change", renderExpenses);
 
-    // Save the monthly budget whenever it changes.
     budgetInput.addEventListener("input", function() {
       const value = Number(budgetInput.value);
 
@@ -1105,7 +1147,6 @@
       renderBudget();
     });
 
-    // Clear all expenses after confirmation.
     clearAllButton.addEventListener("click", function() {
       const confirmed = confirm(
         "Are you sure you want to clear all expenses?"
@@ -1115,13 +1156,11 @@
         expenses = [];
         localStorage.removeItem(STORAGE_KEY);
 
-        // Rebuild month filter so only "All months" remains.
         renderMonthFilter();
         renderExpenses();
       }
     });
 
-    // Switch between tabs.
     document.querySelectorAll(".tab-button").forEach(button => {
       button.addEventListener("click", function() {
         const tabId = button.dataset.tab;
@@ -1139,13 +1178,10 @@
       });
     });
 
-    // Build the initial month filter.
     renderMonthFilter();
-
-    // Render everything when the page opens.
     renderExpenses();
   </script>
 
 </body>
 </html>
-```
+
