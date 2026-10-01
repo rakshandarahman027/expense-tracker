@@ -1,4 +1,3 @@
-```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -13,30 +12,37 @@
 
     body {
       font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 24px;
+      background: #2f4858;
+      color: #2b2b2b;
+    }
+
+    .app-card {
       max-width: 700px;
       margin: 0 auto;
       padding: 24px;
-      background: #fffdf5;
-      color: #1a1a1a;
+      background: #fffaf0;
+      border-radius: 16px;
+      box-shadow: 0 8px 28px rgba(0, 0, 0, 0.18);
     }
 
     h1 {
       margin: 0 0 24px;
+      padding: 0 0 10px;
       font-size: 32px;
-      line-height: 1.2;
-      color: #1a1a1a;
-      display: inline-block;
-      padding-bottom: 7px;
-      border-bottom: 4px solid #a8d5e2;
+      color: #3f6b4d;
+      border-bottom: 3px solid #8b6f47;
     }
 
     h2 {
       margin-top: 32px;
+      color: #2b2b2b;
     }
 
     .tabs {
       display: flex;
-      border-bottom: 1px solid #ddd8c8;
+      border-bottom: 1px solid #e0d8c8;
       margin-bottom: 24px;
     }
 
@@ -49,13 +55,12 @@
       padding: 12px 8px;
       font-size: 16px;
       font-weight: normal;
-      cursor: pointer;
     }
 
     .tab-button.active {
-      color: #1a1a1a;
+      color: #3f6b4d;
       font-weight: bold;
-      border-bottom-color: #b5c9a8;
+      border-bottom-color: #3f6b4d;
     }
 
     .tab-content {
@@ -75,25 +80,27 @@
     .total {
       flex: 1;
       padding: 18px;
-      border-radius: 12px;
+      background: #f7f3eb;
+      border: 1px solid #8b6f47;
+      border-radius: 10px;
       font-size: 24px;
       font-weight: bold;
     }
 
     .total:first-child {
-      background: #e5f3f7;
+      background: #eef3e9;
     }
 
     .total:last-child {
-      background: #fff4b8;
+      background: #f5ead8;
     }
 
     .total-label {
       display: block;
       font-size: 14px;
       font-weight: normal;
-      margin-bottom: 6px;
-      color: #4d4d4d;
+      margin-bottom: 4px;
+      color: #5a564f;
     }
 
     form {
@@ -112,32 +119,31 @@
 
     input,
     select {
-      background: #fffefa;
-      color: #1a1a1a;
-      border: 1px solid #d8d5c9;
+      background: #fffaf0;
+      color: #2b2b2b;
+      border: 1px solid #8b6f47;
     }
 
     input:focus,
     select:focus {
       outline: none;
-      border-color: #a8d5e2;
-      box-shadow: 0 0 0 2px rgba(168, 213, 226, 0.3);
+      border-color: #3f6b4d;
+      box-shadow: 0 0 0 2px rgba(63, 107, 77, 0.15);
     }
 
     button {
-      background: #a8d5e2;
-      color: #1a1a1a;
+      background: #8b6f47;
+      color: #fffaf0;
       border: none;
       cursor: pointer;
-      font-weight: 600;
     }
 
     button:hover {
-      filter: brightness(0.97);
+      filter: brightness(0.94);
     }
 
     .error {
-      color: #c45c52;
+      color: #b85c38;
       font-size: 14px;
       margin: 0;
     }
@@ -145,14 +151,16 @@
     .budget {
       margin-top: 20px;
       padding: 16px;
-      border: 1px solid #b5c9a8;
-      background: #f3f7f0;
+      background: #fffaf0;
+      border: 1px solid #e0d8c8;
+      border-left: 4px solid #3f6b4d;
       border-radius: 10px;
     }
 
     .budget h2 {
       margin: 0 0 12px;
       font-size: 20px;
+      color: #2b2b2b;
     }
 
     .budget-input {
@@ -180,11 +188,11 @@
     }
 
     .under-budget {
-      color: #58734d;
+      color: #3f6b4d;
     }
 
     .over-budget {
-      color: #c45c52;
+      color: #b85c38;
     }
 
     .calendar {
@@ -203,21 +211,25 @@
       margin: 0;
       font-size: 22px;
       font-weight: bold;
-      text-align: center;
+      color: #3f6b4d;
     }
 
     .calendar-nav {
       width: auto;
-      min-width: 44px;
       padding: 8px 14px;
       font-size: 18px;
-      flex-shrink: 0;
+      background: #8b6f47;
+      color: #fffaf0;
+      border-radius: 8px;
     }
 
     .calendar-grid {
       display: grid;
       grid-template-columns: repeat(7, 1fr);
       gap: 4px;
+      padding: 4px;
+      background: #f7f3eb;
+      border-radius: 10px;
     }
 
     .weekday {
@@ -225,35 +237,32 @@
       font-weight: bold;
       font-size: 13px;
       padding: 8px 2px;
-      color: #666;
+      color: #3f6b4d;
     }
 
     .day {
       min-height: 70px;
-      border: 1px solid #ddd8c8;
-      background: #fffefa;
+      border: 1px solid #b8aa93;
       padding: 6px;
       display: flex;
       flex-direction: column;
       align-items: flex-start;
       gap: 6px;
       overflow: hidden;
+      background: #fffaf0;
       border-radius: 6px;
-    }
-
-    .day.today {
-      background: #fff4b8;
     }
 
     .day-number {
       font-weight: bold;
       font-size: 14px;
+      color: #2b2b2b;
     }
 
     .day-badge {
       font-size: 11px;
-      background: #b5c9a8;
-      color: #294126;
+      background: #3f6b4d;
+      color: #fffaf0;
       padding: 3px 5px;
       border-radius: 4px;
       white-space: nowrap;
@@ -263,13 +272,14 @@
     }
 
     .day-badge.high {
-      background: #f2b7ad;
-      color: #873b32;
+      background: #b85c38;
+      color: #fffaf0;
       font-weight: bold;
     }
 
     .empty-day {
       min-height: 70px;
+      background: transparent;
     }
 
     .summary {
@@ -278,14 +288,14 @@
 
     .summary-item {
       padding: 10px 12px;
-      border-bottom: 1px solid #ddd8c8;
+      border-bottom: 1px solid #e0d8c8;
       display: flex;
       justify-content: space-between;
+      background: #fffaf0;
     }
 
     .summary-item:nth-child(even) {
-      background: #f5f8f1;
-      border-radius: 6px;
+      background: #f5ead8;
     }
 
     .filter {
@@ -298,16 +308,16 @@
 
     .expense {
       padding: 16px 12px;
-      border-bottom: 1px solid #ddd8c8;
+      border-bottom: 1px solid #e0d8c8;
       display: flex;
       justify-content: space-between;
       gap: 12px;
       align-items: flex-start;
-      border-radius: 6px;
+      background: #fffaf0;
     }
 
     .expense:nth-child(even) {
-      background: #f5f8f1;
+      background: #f5ead8;
     }
 
     .expense-info {
@@ -318,48 +328,56 @@
     .expense-amount {
       font-size: 20px;
       font-weight: bold;
+      color: #2b2b2b;
     }
 
     .expense-details {
       margin-top: 6px;
-      color: #555;
+      color: #655f56;
       font-size: 14px;
-      overflow-wrap: anywhere;
     }
 
     .delete-button {
       width: auto;
       padding: 4px 8px;
       background: transparent;
-      color: #888;
-      border: 1px solid #ccc;
+      color: #8b6f47;
+      border: 1px solid #8b6f47;
       font-size: 14px;
       flex-shrink: 0;
-      border-radius: 6px;
     }
 
     .delete-button:hover {
-      background: #fff0ed;
-      color: #c45c52;
-      border-color: #c45c52;
+      background: #fff1ec;
+      color: #b85c38;
+      border-color: #b85c38;
       filter: none;
     }
 
     .clear-button {
       margin-top: 24px;
-      background: #c45c52;
-      color: white;
+      background: #9b3a2c;
+      color: #fffaf0;
       border-radius: 8px;
     }
 
     .clear-button:hover {
-      background: #ae4c43;
+      background: #843126;
       filter: none;
     }
 
     @media (max-width: 500px) {
       body {
-        padding: 16px;
+        padding: 0;
+      }
+
+      .app-card {
+        max-width: none;
+        min-height: 100vh;
+        margin: 0;
+        padding: 10px 12px;
+        border-radius: 0;
+        box-shadow: none;
       }
 
       h1 {
@@ -400,6 +418,7 @@
 
       .calendar-grid {
         gap: 2px;
+        padding: 2px;
       }
 
       .day {
@@ -429,8 +448,7 @@
       }
 
       .calendar-nav {
-        min-width: 40px;
-        padding: 7px 9px;
+        padding: 7px 10px;
         font-size: 16px;
       }
 
@@ -444,147 +462,151 @@
 
 <body>
 
-  <h1>Rakshanda's Budget</h1>
+  <div class="app-card">
 
-  <nav class="tabs">
-    <button class="tab-button active" data-tab="add-tab" type="button">Add</button>
-    <button class="tab-button" data-tab="calendar-tab" type="button">Calendar</button>
-    <button class="tab-button" data-tab="history-tab" type="button">History</button>
-  </nav>
+    <h1>Rakshanda's Budget</h1>
 
-  <!-- ADD TAB -->
-  <section id="add-tab" class="tab-content active">
+    <nav class="tabs">
+      <button class="tab-button active" data-tab="add-tab" type="button">Add</button>
+      <button class="tab-button" data-tab="calendar-tab" type="button">Calendar</button>
+      <button class="tab-button" data-tab="history-tab" type="button">History</button>
+    </nav>
 
-    <div class="totals">
-      <div class="total">
-        <span class="total-label">All-time total</span>
-        $<span id="total">0.00</span>
+    <!-- ADD TAB -->
+    <section id="add-tab" class="tab-content active">
+
+      <div class="totals">
+        <div class="total">
+          <span class="total-label">All-time total</span>
+          $<span id="total">0.00</span>
+        </div>
+
+        <div class="total">
+          <span class="total-label">This month</span>
+          $<span id="month-total">0.00</span>
+        </div>
       </div>
 
-      <div class="total">
-        <span class="total-label">This month</span>
-        $<span id="month-total">0.00</span>
-      </div>
-    </div>
+      <div class="budget">
+        <div class="budget-input">
+          <label for="budget-input">Monthly budget</label>
+          <input type="number" id="budget-input" placeholder="e.g. 2500" min="0">
+        </div>
 
-    <div class="budget">
-      <div class="budget-input">
-        <label for="budget-input">Monthly budget</label>
-        <input type="number" id="budget-input" placeholder="e.g. 2500" min="0">
-      </div>
+        <h2 id="add-budget-title">Budget for October 2026</h2>
 
-      <h2 id="add-budget-title">Budget for October 2026</h2>
+        <div class="budget-line">
+          Spent: $<span id="add-budget-spent">0.00</span>
+        </div>
 
-      <div class="budget-line">
-        Spent: $<span id="add-budget-spent">0.00</span>
-      </div>
+        <div class="budget-line">
+          Budget: $<span id="add-budget-amount">0.00</span>
+        </div>
 
-      <div class="budget-line">
-        Budget: $<span id="add-budget-amount">0.00</span>
-      </div>
-
-      <div id="add-budget-left-line" class="budget-line budget-left under-budget">
-        Left: $<span id="add-budget-left">0.00</span>
-      </div>
-    </div>
-
-    <form id="expense-form">
-      <input type="date" id="date">
-
-      <input type="number" id="amount" placeholder="Amount">
-
-      <select id="payment-method">
-        <option>Cash</option>
-        <option>Octopus</option>
-        <option>Alipay</option>
-        <option>Mastercard</option>
-        <option>Visa</option>
-        <option>Other</option>
-      </select>
-
-      <select id="category">
-        <option>Food</option>
-        <option>Transport</option>
-        <option>Shopping</option>
-        <option>Bills</option>
-        <option>Fun</option>
-        <option>Other</option>
-      </select>
-
-      <input type="text" id="note" placeholder="Note (optional)">
-
-      <button type="submit">Add expense</button>
-
-      <p id="error-message" class="error"></p>
-    </form>
-
-  </section>
-
-  <!-- CALENDAR TAB -->
-  <section id="calendar-tab" class="tab-content">
-
-    <div class="calendar">
-      <div class="calendar-header">
-        <button id="previous-month" class="calendar-nav" type="button">◀</button>
-        <h2 id="calendar-title"></h2>
-        <button id="next-month" class="calendar-nav" type="button">▶</button>
+        <div id="add-budget-left-line" class="budget-line budget-left under-budget">
+          Left: $<span id="add-budget-left">0.00</span>
+        </div>
       </div>
 
-      <div class="calendar-grid" id="calendar"></div>
-    </div>
+      <form id="expense-form">
+        <input type="date" id="date">
 
-    <div class="budget">
-      <h2 id="calendar-budget-title">Budget for October 2026</h2>
+        <input type="number" id="amount" placeholder="Amount">
 
-      <div class="budget-line">
-        Spent: $<span id="calendar-budget-spent">0.00</span>
+        <select id="payment-method">
+          <option>Cash</option>
+          <option>Octopus</option>
+          <option>Alipay</option>
+          <option>Mastercard</option>
+          <option>Visa</option>
+          <option>Other</option>
+        </select>
+
+        <select id="category">
+          <option>Food</option>
+          <option>Transport</option>
+          <option>Shopping</option>
+          <option>Bills</option>
+          <option>Fun</option>
+          <option>Other</option>
+        </select>
+
+        <input type="text" id="note" placeholder="Note (optional)">
+
+        <button type="submit">Add expense</button>
+
+        <p id="error-message" class="error"></p>
+      </form>
+
+    </section>
+
+    <!-- CALENDAR TAB -->
+    <section id="calendar-tab" class="tab-content">
+
+      <div class="calendar">
+        <div class="calendar-header">
+          <button id="previous-month" class="calendar-nav" type="button">◀</button>
+          <h2 id="calendar-title"></h2>
+          <button id="next-month" class="calendar-nav" type="button">▶</button>
+        </div>
+
+        <div class="calendar-grid" id="calendar"></div>
       </div>
 
-      <div class="budget-line">
-        Budget: $<span id="calendar-budget-amount">0.00</span>
+      <div class="budget">
+        <h2 id="calendar-budget-title">Budget for October 2026</h2>
+
+        <div class="budget-line">
+          Spent: $<span id="calendar-budget-spent">0.00</span>
+        </div>
+
+        <div class="budget-line">
+          Budget: $<span id="calendar-budget-amount">0.00</span>
+        </div>
+
+        <div id="calendar-budget-left-line" class="budget-line budget-left under-budget">
+          Left: $<span id="calendar-budget-left">0.00</span>
+        </div>
       </div>
 
-      <div id="calendar-budget-left-line" class="budget-line budget-left under-budget">
-        Left: $<span id="calendar-budget-left">0.00</span>
+    </section>
+
+    <!-- HISTORY TAB -->
+    <section id="history-tab" class="tab-content">
+
+      <div class="filter">
+        <select id="payment-filter">
+          <option>All methods</option>
+          <option>Cash</option>
+          <option>Octopus</option>
+          <option>Alipay</option>
+          <option>Mastercard</option>
+          <option>Visa</option>
+          <option>Other</option>
+        </select>
+
+        <select id="category-filter">
+          <option>All categories</option>
+          <option>Food</option>
+          <option>Transport</option>
+          <option>Shopping</option>
+          <option>Bills</option>
+          <option>Fun</option>
+          <option>Other</option>
+        </select>
       </div>
-    </div>
 
-  </section>
+      <h2>Summary by payment method</h2>
+      <div id="summary" class="summary"></div>
 
-  <!-- HISTORY TAB -->
-  <section id="history-tab" class="tab-content">
+      <h2>Expenses</h2>
+      <div id="expense-list"></div>
 
-    <div class="filter">
-      <select id="payment-filter">
-        <option>All methods</option>
-        <option>Cash</option>
-        <option>Octopus</option>
-        <option>Alipay</option>
-        <option>Mastercard</option>
-        <option>Visa</option>
-        <option>Other</option>
-      </select>
+      <button id="clear-all" class="clear-button">Clear all</button>
 
-      <select id="category-filter">
-        <option>All categories</option>
-        <option>Food</option>
-        <option>Transport</option>
-        <option>Shopping</option>
-        <option>Bills</option>
-        <option>Fun</option>
-        <option>Other</option>
-      </select>
-    </div>
+    </section>
 
-    <h2>Summary by payment method</h2>
-    <div id="summary" class="summary"></div>
-
-    <h2>Expenses</h2>
-    <div id="expense-list"></div>
-
-    <button id="clear-all" class="clear-button">Clear all</button>
-
-  </section>
+  </div>
 
   <script>
     const STORAGE_KEY = "expenseTracker.v1";
@@ -741,12 +763,6 @@
         dayElement.appendChild(dayNumber);
 
         const date = `${year}-${String(month + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
-
-        const today = getLocalDate();
-
-        if (date === today) {
-          dayElement.classList.add("today");
-        }
 
         const dayTotal = expenses
           .filter(expense => expense.date === date)
@@ -1002,4 +1018,5 @@
 
 </body>
 </html>
-```
+
+
