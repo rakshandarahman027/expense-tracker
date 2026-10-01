@@ -74,15 +74,23 @@
       margin-top: 32px;
     }
 
-    .calendar-title {
+    .calendar-header {
       display: flex;
-      justify-content: space-between;
       align-items: center;
+      justify-content: space-between;
       margin-bottom: 12px;
     }
 
-    .calendar-title h2 {
+    .calendar-header h2 {
       margin: 0;
+      font-size: 22px;
+      font-weight: bold;
+    }
+
+    .calendar-nav {
+      width: auto;
+      padding: 8px 14px;
+      font-size: 18px;
     }
 
     .calendar-grid {
@@ -229,6 +237,8 @@
   </div>
 
   <form id="expense-form">
+    <input type="date" id="date">
+
     <input type="number" id="amount" placeholder="Amount">
 
     <select id="payment-method">
@@ -257,8 +267,10 @@
   </form>
 
   <div class="calendar">
-    <div class="calendar-title">
-      <h2>October 2026</h2>
+    <div class="calendar-header">
+      <button id="previous-month" class="calendar-nav" type="button">◀</button>
+      <h2 id="calendar-title"></h2>
+      <button id="next-month" class="calendar-nav" type="button">▶</button>
     </div>
 
     <div class="calendar-grid" id="calendar"></div>
@@ -295,6 +307,7 @@
     });
 
     const form = document.getElementById("expense-form");
+    const dateInput = document.getElementById("date");
     const amountInput = document.getElementById("amount");
     const paymentInput = document.getElementById("payment-method");
     const categoryInput = document.getElementById("category");
@@ -307,6 +320,9 @@
     const summaryElement = document.getElementById("summary");
     const clearAllButton = document.getElementById("clear-all");
     const calendarElement = document.getElementById("calendar");
+    const calendarTitle = document.getElementById("calendar-title");
+    const previousMonthButton = document.getElementById("previous-month");
+    const nextMonthButton = document.getElementById("next-month");
 
     // Get today's date using the local timezone.
     function getLocalDate() {
@@ -318,9 +334,25 @@
       return `${year}-${month}-${day}`;
     }
 
-    // Display the October 2026 calendar.
+    // Set the date input to today's local date.
+    dateInput.value = getLocalDate();
+
+    // The calendar starts on the current local month.
+    let calendarDate = new Date();
+    calendarDate.setDate(1);
+
+    // Display the selected calendar month.
     function renderCalendar() {
       calendarElement.innerHTML = "";
+
+      const year = calendarDate.getFullYear();
+      const month = calendarDate.getMonth();
+
+      const monthName = calendarDate.toLocaleString("en-US", {
+        month: "long"
+      });
+
+      calendarTitle.textContent = `${monthName} ${year}`;
 
       const weekdays = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 
@@ -331,17 +363,21 @@
         calendarElement.appendChild(weekdayElement);
       });
 
-      // October 1, 2026 is Thursday.
-      const firstDayOffset = 3;
-      const daysInMonth = 31;
+      // JavaScript uses Sunday = 0, so convert it to Monday = 0.
+      const firstDay = new Date(year, month, 1).getDay();
+      const firstDayOffset = (firstDay + 6) % 7;
 
-      // Add empty cells before October 1.
+      // Get the correct number of days in the selected month.
+      const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+      // Add empty cells before the first day.
       for (let i = 0; i < firstDayOffset; i++) {
         const emptyDay = document.createElement("div");
         emptyDay.className = "empty-day";
         calendarElement.appendChild(emptyDay);
       }
 
+      // Create each day in the selected month.
       for (let day = 1; day <= daysInMonth; day++) {
         const dayElement = document.createElement("div");
         dayElement.className = "day";
@@ -352,7 +388,7 @@
 
         dayElement.appendChild(dayNumber);
 
-        const date = `2026-10-${String(day).padStart(2, "0")}`;
+        const date = `${year}-${String(month + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
 
         const dayTotal = expenses
           .filter(expense => expense.date === date)
@@ -373,6 +409,18 @@
         calendarElement.appendChild(dayElement);
       }
     }
+
+    // Move the calendar one month backward.
+    previousMonthButton.addEventListener("click", function() {
+      calendarDate.setMonth(calendarDate.getMonth() - 1);
+      renderCalendar();
+    });
+
+    // Move the calendar one month forward.
+    nextMonthButton.addEventListener("click", function() {
+      calendarDate.setMonth(calendarDate.getMonth() + 1);
+      renderCalendar();
+    });
 
     // Display expenses and update all totals and the summary.
     function renderExpenses() {
@@ -474,7 +522,7 @@
         paymentMethod: paymentInput.value,
         category: categoryInput.value,
         note: noteInput.value,
-        date: getLocalDate()
+        date: dateInput.value
       };
 
       expenses.unshift(expense);
@@ -482,6 +530,10 @@
       localStorage.setItem(STORAGE_KEY, JSON.stringify(expenses));
 
       form.reset();
+
+      // Reset the date to today's local date after submission.
+      dateInput.value = getLocalDate();
+
       errorMessage.textContent = "";
       renderExpenses();
     });
