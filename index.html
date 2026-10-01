@@ -161,6 +161,15 @@
     .expense {
       padding: 16px 0;
       border-bottom: 1px solid #ddd;
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: flex-start;
+    }
+
+    .expense-info {
+      flex: 1;
+      min-width: 0;
     }
 
     .expense-amount {
@@ -172,6 +181,16 @@
       margin-top: 6px;
       color: #555;
       font-size: 14px;
+    }
+
+    .delete-button {
+      width: auto;
+      padding: 4px 8px;
+      background: white;
+      color: #c00;
+      border: 1px solid #c00;
+      font-size: 14px;
+      flex-shrink: 0;
     }
 
     .clear-button {
@@ -484,11 +503,14 @@
         );
       });
 
-      filteredExpenses.forEach(expense => {
+      filteredExpenses.forEach((expense, index) => {
         const expenseElement = document.createElement("div");
         expenseElement.className = "expense";
 
-        expenseElement.innerHTML = `
+        const expenseInfo = document.createElement("div");
+        expenseInfo.className = "expense-info";
+
+        expenseInfo.innerHTML = `
           <div class="expense-amount">$${Number(expense.amount).toFixed(2)}</div>
           <div class="expense-details">
             ${expense.date} · ${expense.paymentMethod} · ${expense.category}
@@ -496,6 +518,28 @@
           </div>
         `;
 
+        const deleteButton = document.createElement("button");
+        deleteButton.className = "delete-button";
+        deleteButton.type = "button";
+        deleteButton.textContent = "✕";
+        deleteButton.setAttribute("aria-label", "Delete expense");
+
+        deleteButton.addEventListener("click", function() {
+          const confirmed = confirm("Delete this expense?");
+
+          if (confirmed) {
+            const expenseIndex = expenses.indexOf(expense);
+
+            if (expenseIndex !== -1) {
+              expenses.splice(expenseIndex, 1);
+              localStorage.setItem(STORAGE_KEY, JSON.stringify(expenses));
+              renderExpenses();
+            }
+          }
+        });
+
+        expenseElement.appendChild(expenseInfo);
+        expenseElement.appendChild(deleteButton);
         expenseList.appendChild(expenseElement);
       });
 
