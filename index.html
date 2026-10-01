@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Expense Tracker</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 700px;
+      margin: 0 auto;
+      padding: 24px;
+      background: white;
+      color: black;
+    }
+
+    h1 {
+      margin-bottom: 8px;
+    }
+
+    h2 {
+      margin-top: 32px;
+    }
+
+    .total {
+      font-size: 28px;
+      font-weight: bold;
+      margin: 20px 0;
+    }
+
+    form {
+      display: grid;
+      gap: 12px;
+    }
+
+    input,
+    select,
+    button {
+      width: 100%;
+      padding: 12px;
+      font-size: 16px;
+    }
+
+    button {
+      background: black;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+
+    .expense {
+      padding: 16px 0;
+      border-bottom: 1px solid #ddd;
+    }
+
+    .expense-amount {
+      font-size: 20px;
+      font-weight: bold;
+    }
+
+    .expense-details {
+      margin-top: 6px;
+      color: #555;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Expense Tracker</h1>
+
+  <div class="total">
+    Total: $<span id="total">0.00</span>
+  </div>
+
+  <form id="expense-form">
+    <input type="number" id="amount" placeholder="Amount">
+
+    <select id="payment-method">
+      <option>Cash</option>
+      <option>Octopus</option>
+      <option>Alipay</option>
+      <option>Mastercard</option>
+      <option>Visa</option>
+      <option>Other</option>
+    </select>
+
+    <select id="category">
+      <option>Food</option>
+      <option>Transport</option>
+      <option>Shopping</option>
+      <option>Bills</option>
+      <option>Fun</option>
+      <option>Other</option>
+    </select>
+
+    <input type="text" id="note" placeholder="Note (optional)">
+
+    <button type="submit">Add expense</button>
+  </form>
+
+  <h2>Expenses</h2>
+  <div id="expense-list"></div>
+
+  <script>
+    const STORAGE_KEY = "expenseTracker.v1";
+
+    // Load saved expenses, or start with an empty list.
+    let expenses = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+
+    const form = document.getElementById("expense-form");
+    const amountInput = document.getElementById("amount");
+    const paymentInput = document.getElementById("payment-method");
+    const categoryInput = document.getElementById("category");
+    const noteInput = document.getElementById("note");
+    const expenseList = document.getElementById("expense-list");
+    const totalElement = document.getElementById("total");
+
+    // Get today's date using the local timezone.
+    function getLocalDate() {
+      const now = new Date();
+      const year = now.getFullYear();
+      const month = String(now.getMonth() + 1).padStart(2, "0");
+      const day = String(now.getDate()).padStart(2, "0");
+
+      return `${year}-${month}-${day}`;
+    }
+
+    // Display all expenses and the total.
+    function renderExpenses() {
+      expenseList.innerHTML = "";
+
+      let total = 0;
+
+      expenses.forEach(expense => {
+        total += Number(expense.amount);
+
+        const expenseElement = document.createElement("div");
+        expenseElement.className = "expense";
+
+        expenseElement.innerHTML = `
+          <div class="expense-amount">$${Number(expense.amount).toFixed(2)}</div>
+          <div class="expense-details">
+            ${expense.date} · ${expense.paymentMethod} · ${expense.category}
+            ${expense.note ? ` · ${expense.note}` : ""}
+          </div>
+        `;
+
+        expenseList.appendChild(expenseElement);
+      });
+
+      totalElement.textContent = total.toFixed(2);
+    }
+
+    // Add a new expense.
+    form.addEventListener("submit", function(event) {
+      event.preventDefault();
+
+      const expense = {
+        amount: amountInput.value,
+        paymentMethod: paymentInput.value,
+        category: categoryInput.value,
+        note: noteInput.value,
+        date: getLocalDate()
+      };
+
+      expenses.unshift(expense);
+
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(expenses));
+
+      form.reset();
+      renderExpenses();
+    });
+
+    // Show saved expenses when the page opens.
+    renderExpenses();
+  </script>
+
+</body>
+</html>
