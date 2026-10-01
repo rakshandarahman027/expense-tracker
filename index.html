@@ -1,9 +1,10 @@
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Expense Tracker</title>
+  <title>Rakshanda's Budget</title>
 
   <style>
     * {
@@ -15,12 +16,18 @@
       max-width: 700px;
       margin: 0 auto;
       padding: 24px;
-      background: white;
-      color: black;
+      background: #fffdf5;
+      color: #1a1a1a;
     }
 
     h1 {
-      margin-bottom: 20px;
+      margin: 0 0 24px;
+      font-size: 32px;
+      line-height: 1.2;
+      color: #1a1a1a;
+      display: inline-block;
+      padding-bottom: 7px;
+      border-bottom: 4px solid #a8d5e2;
     }
 
     h2 {
@@ -29,25 +36,26 @@
 
     .tabs {
       display: flex;
-      border-bottom: 1px solid #ddd;
+      border-bottom: 1px solid #ddd8c8;
       margin-bottom: 24px;
     }
 
     .tab-button {
       flex: 1;
-      background: white;
-      color: #555;
+      background: transparent;
+      color: #777;
       border: none;
       border-bottom: 3px solid transparent;
       padding: 12px 8px;
       font-size: 16px;
       font-weight: normal;
+      cursor: pointer;
     }
 
     .tab-button.active {
-      color: black;
+      color: #1a1a1a;
       font-weight: bold;
-      border-bottom-color: black;
+      border-bottom-color: #b5c9a8;
     }
 
     .tab-content {
@@ -60,20 +68,32 @@
 
     .totals {
       display: flex;
-      gap: 32px;
+      gap: 16px;
       margin: 20px 0;
     }
 
     .total {
+      flex: 1;
+      padding: 18px;
+      border-radius: 12px;
       font-size: 24px;
       font-weight: bold;
+    }
+
+    .total:first-child {
+      background: #e5f3f7;
+    }
+
+    .total:last-child {
+      background: #fff4b8;
     }
 
     .total-label {
       display: block;
       font-size: 14px;
       font-weight: normal;
-      margin-bottom: 4px;
+      margin-bottom: 6px;
+      color: #4d4d4d;
     }
 
     form {
@@ -87,17 +107,37 @@
       width: 100%;
       padding: 12px;
       font-size: 16px;
+      border-radius: 8px;
+    }
+
+    input,
+    select {
+      background: #fffefa;
+      color: #1a1a1a;
+      border: 1px solid #d8d5c9;
+    }
+
+    input:focus,
+    select:focus {
+      outline: none;
+      border-color: #a8d5e2;
+      box-shadow: 0 0 0 2px rgba(168, 213, 226, 0.3);
     }
 
     button {
-      background: black;
-      color: white;
+      background: #a8d5e2;
+      color: #1a1a1a;
       border: none;
       cursor: pointer;
+      font-weight: 600;
+    }
+
+    button:hover {
+      filter: brightness(0.97);
     }
 
     .error {
-      color: #c00;
+      color: #c45c52;
       font-size: 14px;
       margin: 0;
     }
@@ -105,7 +145,9 @@
     .budget {
       margin-top: 20px;
       padding: 16px;
-      border: 1px solid #ddd;
+      border: 1px solid #b5c9a8;
+      background: #f3f7f0;
+      border-radius: 10px;
     }
 
     .budget h2 {
@@ -138,11 +180,11 @@
     }
 
     .under-budget {
-      color: darkgreen;
+      color: #58734d;
     }
 
     .over-budget {
-      color: #c00;
+      color: #c45c52;
     }
 
     .calendar {
@@ -154,18 +196,22 @@
       align-items: center;
       justify-content: space-between;
       margin-bottom: 12px;
+      gap: 10px;
     }
 
     .calendar-header h2 {
       margin: 0;
       font-size: 22px;
       font-weight: bold;
+      text-align: center;
     }
 
     .calendar-nav {
       width: auto;
+      min-width: 44px;
       padding: 8px 14px;
       font-size: 18px;
+      flex-shrink: 0;
     }
 
     .calendar-grid {
@@ -179,17 +225,24 @@
       font-weight: bold;
       font-size: 13px;
       padding: 8px 2px;
+      color: #666;
     }
 
     .day {
       min-height: 70px;
-      border: 1px solid #ddd;
+      border: 1px solid #ddd8c8;
+      background: #fffefa;
       padding: 6px;
       display: flex;
       flex-direction: column;
       align-items: flex-start;
       gap: 6px;
       overflow: hidden;
+      border-radius: 6px;
+    }
+
+    .day.today {
+      background: #fff4b8;
     }
 
     .day-number {
@@ -199,7 +252,8 @@
 
     .day-badge {
       font-size: 11px;
-      background: #eee;
+      background: #b5c9a8;
+      color: #294126;
       padding: 3px 5px;
       border-radius: 4px;
       white-space: nowrap;
@@ -209,8 +263,8 @@
     }
 
     .day-badge.high {
-      background: #ffd6d6;
-      color: #b00000;
+      background: #f2b7ad;
+      color: #873b32;
       font-weight: bold;
     }
 
@@ -223,10 +277,15 @@
     }
 
     .summary-item {
-      padding: 8px 0;
-      border-bottom: 1px solid #ddd;
+      padding: 10px 12px;
+      border-bottom: 1px solid #ddd8c8;
       display: flex;
       justify-content: space-between;
+    }
+
+    .summary-item:nth-child(even) {
+      background: #f5f8f1;
+      border-radius: 6px;
     }
 
     .filter {
@@ -238,12 +297,17 @@
     }
 
     .expense {
-      padding: 16px 0;
-      border-bottom: 1px solid #ddd;
+      padding: 16px 12px;
+      border-bottom: 1px solid #ddd8c8;
       display: flex;
       justify-content: space-between;
       gap: 12px;
       align-items: flex-start;
+      border-radius: 6px;
+    }
+
+    .expense:nth-child(even) {
+      background: #f5f8f1;
     }
 
     .expense-info {
@@ -260,26 +324,47 @@
       margin-top: 6px;
       color: #555;
       font-size: 14px;
+      overflow-wrap: anywhere;
     }
 
     .delete-button {
       width: auto;
       padding: 4px 8px;
-      background: white;
-      color: #c00;
-      border: 1px solid #c00;
+      background: transparent;
+      color: #888;
+      border: 1px solid #ccc;
       font-size: 14px;
       flex-shrink: 0;
+      border-radius: 6px;
+    }
+
+    .delete-button:hover {
+      background: #fff0ed;
+      color: #c45c52;
+      border-color: #c45c52;
+      filter: none;
     }
 
     .clear-button {
       margin-top: 24px;
-      background: #c00;
+      background: #c45c52;
+      color: white;
+      border-radius: 8px;
+    }
+
+    .clear-button:hover {
+      background: #ae4c43;
+      filter: none;
     }
 
     @media (max-width: 500px) {
       body {
         padding: 16px;
+      }
+
+      h1 {
+        font-size: 28px;
+        margin-bottom: 20px;
       }
 
       .tabs {
@@ -292,11 +377,16 @@
       }
 
       .totals {
-        gap: 16px;
+        gap: 10px;
       }
 
       .total {
+        padding: 14px;
         font-size: 20px;
+      }
+
+      .total-label {
+        font-size: 13px;
       }
 
       .budget-input {
@@ -333,13 +423,28 @@
         font-size: 9px;
         padding: 2px 3px;
       }
+
+      .calendar-header h2 {
+        font-size: 19px;
+      }
+
+      .calendar-nav {
+        min-width: 40px;
+        padding: 7px 9px;
+        font-size: 16px;
+      }
+
+      .expense {
+        padding-left: 8px;
+        padding-right: 8px;
+      }
     }
   </style>
 </head>
 
 <body>
 
-  <h1>Expense Tracker</h1>
+  <h1>Rakshanda's Budget</h1>
 
   <nav class="tabs">
     <button class="tab-button active" data-tab="add-tab" type="button">Add</button>
@@ -637,6 +742,12 @@
 
         const date = `${year}-${String(month + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
 
+        const today = getLocalDate();
+
+        if (date === today) {
+          dayElement.classList.add("today");
+        }
+
         const dayTotal = expenses
           .filter(expense => expense.date === date)
           .reduce((total, expense) => total + Number(expense.amount), 0);
@@ -891,3 +1002,4 @@
 
 </body>
 </html>
+```
