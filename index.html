@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -300,10 +301,12 @@
 
     .filter {
       margin-bottom: 16px;
+      display: grid;
+      gap: 10px;
     }
 
     .filter select {
-      margin-bottom: 10px;
+      margin-bottom: 0;
     }
 
     .expense {
@@ -575,6 +578,23 @@
     <section id="history-tab" class="tab-content">
 
       <div class="filter">
+
+        <!-- Month filter -->
+        <select id="month-filter">
+          <option value="all">All months</option>
+        </select>
+
+        <!-- Week filter -->
+        <select id="week-filter">
+          <option value="all">All weeks</option>
+          <option value="1">Week 1 (1–7)</option>
+          <option value="2">Week 2 (8–14)</option>
+          <option value="3">Week 3 (15–21)</option>
+          <option value="4">Week 4 (22–28)</option>
+          <option value="5">Week 5 (29–31)</option>
+        </select>
+
+        <!-- Existing payment filter -->
         <select id="payment-filter">
           <option>All methods</option>
           <option>Cash</option>
@@ -585,6 +605,7 @@
           <option>Other</option>
         </select>
 
+        <!-- Existing category filter -->
         <select id="category-filter">
           <option>All categories</option>
           <option>Food</option>
@@ -594,6 +615,7 @@
           <option>Fun</option>
           <option>Other</option>
         </select>
+
       </div>
 
       <h2>Summary by payment method</h2>
@@ -628,8 +650,12 @@
     const paymentInput = document.getElementById("payment-method");
     const categoryInput = document.getElementById("category");
     const noteInput = document.getElementById("note");
+
+    const monthFilter = document.getElementById("month-filter");
+    const weekFilter = document.getElementById("week-filter");
     const paymentFilter = document.getElementById("payment-filter");
     const categoryFilter = document.getElementById("category-filter");
+
     const expenseList = document.getElementById("expense-list");
     const totalElement = document.getElementById("total");
     const monthTotalElement = document.getElementById("month-total");
@@ -676,6 +702,58 @@
           return expense.date.startsWith(`${year}-${monthString}`);
         })
         .reduce((total, expense) => total + Number(expense.amount), 0);
+    }
+
+    // Rebuild the month filter from the current expenses.
+    function renderMonthFilter() {
+      const currentSelection = monthFilter.value;
+
+      // Get unique YYYY-MM values from expenses.
+      const uniqueMonths = [...new Set(
+        expenses
+          .map(expense => expense.date.substring(0, 7))
+          .filter(month => /^\d{4}-\d{2}$/.test(month))
+      )];
+
+      // Sort newest first.
+      uniqueMonths.sort((a, b) => b.localeCompare(a));
+
+      // Clear the existing options.
+      monthFilter.innerHTML = "";
+
+      // Always keep All months first.
+      const allOption = document.createElement("option");
+      allOption.value = "all";
+      allOption.textContent = "All months";
+      monthFilter.appendChild(allOption);
+
+      // Add each month that actually exists.
+      uniqueMonths.forEach(month => {
+        const option = document.createElement("option");
+        option.value = month;
+
+        const [year, monthNumber] = month.split("-");
+
+        const displayDate = new Date(
+          Number(year),
+          Number(monthNumber) - 1,
+          1
+        );
+
+        option.textContent = displayDate.toLocaleString("en-US", {
+          month: "long",
+          year: "numeric"
+        });
+
+        monthFilter.appendChild(option);
+      });
+
+      // Preserve the current selection if it still exists.
+      if (currentSelection !== "all" && uniqueMonths.includes(currentSelection)) {
+        monthFilter.value = currentSelection;
+      } else {
+        monthFilter.value = "all";
+      }
     }
 
     // Update budget information for the currently viewed calendar month.
@@ -810,6 +888,8 @@
       const currentYear = today.getFullYear();
       const currentMonth = String(today.getMonth() + 1).padStart(2, "0");
 
+      const selectedMonth = monthFilter.value;
+      const selectedWeek = weekFilter.value;
       const selectedPayment = paymentFilter.value;
       const selectedCategory = categoryFilter.value;
 
@@ -851,17 +931,50 @@
         });
       }
 
-      // Filters only affect which rows are shown.
+      // Filters combine using AND.
       const filteredExpenses = expenses.filter(expense => {
+        // Month filter.
+        const monthMatches =
+          selectedMonth === "all" ||
+          expense.date.startsWith(selectedMonth);
+
+        // Week filter based only on day of month.
+        const day = Number(expense.date.substring(8, 10));
+
+        let weekMatches = true;
+
+        if (selectedWeek !== "all") {
+          const weekNumber = Number(selectedWeek);
+
+          if (weekNumber === 1) {
+            weekMatches = day >= 1 && day <= 7;
+          } else if (weekNumber === 2) {
+            weekMatches = day >= 8 && day <= 14;
+          } else if (weekNumber === 3) {
+            weekMatches = day >= 15 && day <= 21;
+          } else if (weekNumber === 4) {
+            weekMatches = day >= 22 && day <= 28;
+          } else if (weekNumber === 5) {
+            weekMatches = day >= 29 && day <= 31;
+          }
+        }
+
+        // Payment filter.
         const paymentMatches =
           selectedPayment === "All methods" ||
           expense.paymentMethod === selectedPayment;
 
+        // Category filter.
         const categoryMatches =
           selectedCategory === "All categories" ||
           expense.category === selectedCategory;
 
-        return paymentMatches && categoryMatches;
+        return (
+          monthMatches &&
+          weekMatches &&
+          paymentMatches &&
+          categoryMatches
+        );
       });
 
       filteredExpenses.forEach(expense => {
@@ -895,11 +1008,14 @@
 
             if (expenseIndex !== -1) {
               expenses.splice(expenseIndex, 1);
+
               localStorage.setItem(
                 STORAGE_KEY,
                 JSON.stringify(expenses)
               );
 
+              // Rebuild month options before rendering the filtered list.
+              renderMonthFilter();
               renderExpenses();
             }
           }
@@ -913,7 +1029,7 @@
       totalElement.textContent = total.toFixed(2);
       monthTotalElement.textContent = monthTotal.toFixed(2);
 
-      // Rebuild everything so hidden tabs have current data.
+      // Calendar and budget always use all expenses.
       renderCalendar();
       renderBudget();
     }
@@ -954,13 +1070,21 @@
       dateInput.value = getLocalDate();
       errorMessage.textContent = "";
 
+      // Rebuild the month list because a new month may now exist.
+      renderMonthFilter();
       renderExpenses();
     });
 
-    // Change payment filter.
+    // Month filter.
+    monthFilter.addEventListener("change", renderExpenses);
+
+    // Week filter.
+    weekFilter.addEventListener("change", renderExpenses);
+
+    // Payment filter.
     paymentFilter.addEventListener("change", renderExpenses);
 
-    // Change category filter.
+    // Category filter.
     categoryFilter.addEventListener("change", renderExpenses);
 
     // Save the monthly budget whenever it changes.
@@ -990,6 +1114,9 @@
       if (confirmed) {
         expenses = [];
         localStorage.removeItem(STORAGE_KEY);
+
+        // Rebuild month filter so only "All months" remains.
+        renderMonthFilter();
         renderExpenses();
       }
     });
@@ -1012,11 +1139,13 @@
       });
     });
 
+    // Build the initial month filter.
+    renderMonthFilter();
+
     // Render everything when the page opens.
     renderExpenses();
   </script>
 
 </body>
 </html>
-
-
+```
