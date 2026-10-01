@@ -70,6 +70,49 @@
       margin: 0;
     }
 
+    .budget {
+      margin-top: 20px;
+      padding: 16px;
+      border: 1px solid #ddd;
+    }
+
+    .budget h2 {
+      margin: 0 0 12px;
+      font-size: 20px;
+    }
+
+    .budget-input {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+
+    .budget-input label {
+      font-size: 14px;
+      white-space: nowrap;
+    }
+
+    .budget-input input {
+      max-width: 180px;
+    }
+
+    .budget-line {
+      margin: 6px 0;
+    }
+
+    .budget-left {
+      font-weight: bold;
+    }
+
+    .under-budget {
+      color: darkgreen;
+    }
+
+    .over-budget {
+      color: #c00;
+    }
+
     .calendar {
       margin-top: 32px;
     }
@@ -211,6 +254,15 @@
         font-size: 20px;
       }
 
+      .budget-input {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .budget-input input {
+        max-width: none;
+      }
+
       .calendar-grid {
         gap: 2px;
       }
@@ -252,6 +304,27 @@
     <div class="total">
       <span class="total-label">This month</span>
       $<span id="month-total">0.00</span>
+    </div>
+  </div>
+
+  <div class="budget">
+    <div class="budget-input">
+      <label for="budget-input">Monthly budget</label>
+      <input type="number" id="budget-input" placeholder="e.g. 2500" min="0">
+    </div>
+
+    <h2 id="budget-title">Budget for October 2026</h2>
+
+    <div class="budget-line">
+      Spent: $<span id="budget-spent">0.00</span>
+    </div>
+
+    <div class="budget-line">
+      Budget: $<span id="budget-amount">0.00</span>
+    </div>
+
+    <div class="budget-line budget-left" id="budget-left-line">
+      Left: $<span id="budget-left">0.00</span>
     </div>
   </div>
 
@@ -318,12 +391,16 @@
 
   <script>
     const STORAGE_KEY = "expenseTracker.v1";
+    const BUDGET_KEY = "expenseTracker.budget";
 
     // Load saved expenses and remove invalid old entries.
     let savedExpenses = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
     let expenses = savedExpenses.filter(expense => {
       return Number.isFinite(Number(expense.amount)) && Number(expense.amount) > 0;
     });
+
+    // Load the saved monthly budget.
+    let budget = Number(localStorage.getItem(BUDGET_KEY)) || 0;
 
     const form = document.getElementById("expense-form");
     const dateInput = document.getElementById("date");
@@ -342,6 +419,12 @@
     const calendarTitle = document.getElementById("calendar-title");
     const previousMonthButton = document.getElementById("previous-month");
     const nextMonthButton = document.getElementById("next-month");
+    const budgetInput = document.getElementById("budget-input");
+    const budgetTitle = document.getElementById("budget-title");
+    const budgetSpent = document.getElementById("budget-spent");
+    const budgetAmount = document.getElementById("budget-amount");
+    const budgetLeftLine = document.getElementById("budget-left-line");
+    const budgetLeft = document.getElementById("budget-left");
 
     // Get today's date using the local timezone.
     function getLocalDate() {
@@ -356,9 +439,52 @@
     // Set the date input to today's local date.
     dateInput.value = getLocalDate();
 
+    // Show the saved budget in the input.
+    budgetInput.value = budget || "";
+
     // The calendar starts on the current local month.
     let calendarDate = new Date();
     calendarDate.setDate(1);
+
+    // Get the month name and year for a calendar date.
+    function getMonthTitle(date) {
+      return date.toLocaleString("en-US", {
+        month: "long",
+        year: "numeric"
+      });
+    }
+
+    // Get the total spent in a specific month.
+    function getMonthSpent(year, month) {
+      const monthString = String(month + 1).padStart(2, "0");
+
+      return expenses
+        .filter(expense => {
+          return expense.date.startsWith(`${year}-${monthString}`);
+        })
+        .reduce((total, expense) => total + Number(expense.amount), 0);
+    }
+
+    // Update the budget section for the currently displayed calendar month.
+    function renderBudget() {
+      const year = calendarDate.getFullYear();
+      const month = calendarDate.getMonth();
+
+      const spent = getMonthSpent(year, month);
+      const difference = budget - spent;
+
+      budgetTitle.textContent = `Budget for ${getMonthTitle(calendarDate)}`;
+      budgetSpent.textContent = spent.toFixed(2);
+      budgetAmount.textContent = budget.toFixed(2);
+
+      if (difference >= 0) {
+        budgetLeftLine.className = "budget-line budget-left under-budget";
+        budgetLeftLine.innerHTML = `Left: $<span id="budget-left">${difference.toFixed(2)}</span>`;
+      } else {
+        budgetLeftLine.className = "budget-line budget-left over-budget";
+        budgetLeftLine.innerHTML = `Over by $<span id="budget-left">${Math.abs(difference).toFixed(2)}</span>`;
+      }
+    }
 
     // Display the selected calendar month.
     function renderCalendar() {
@@ -367,11 +493,7 @@
       const year = calendarDate.getFullYear();
       const month = calendarDate.getMonth();
 
-      const monthName = calendarDate.toLocaleString("en-US", {
-        month: "long"
-      });
-
-      calendarTitle.textContent = `${monthName} ${year}`;
+      calendarTitle.textContent = getMonthTitle(calendarDate);
 
       const weekdays = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 
@@ -433,12 +555,14 @@
     previousMonthButton.addEventListener("click", function() {
       calendarDate.setMonth(calendarDate.getMonth() - 1);
       renderCalendar();
+      renderBudget();
     });
 
     // Move the calendar one month forward.
     nextMonthButton.addEventListener("click", function() {
       calendarDate.setMonth(calendarDate.getMonth() + 1);
       renderCalendar();
+      renderBudget();
     });
 
     // Display expenses and update all totals and the summary.
@@ -503,7 +627,7 @@
         );
       });
 
-      filteredExpenses.forEach((expense, index) => {
+      filteredExpenses.forEach(expense => {
         const expenseElement = document.createElement("div");
         expenseElement.className = "expense";
 
@@ -534,6 +658,7 @@
               expenses.splice(expenseIndex, 1);
               localStorage.setItem(STORAGE_KEY, JSON.stringify(expenses));
               renderExpenses();
+              renderBudget();
             }
           }
         });
@@ -547,9 +672,10 @@
       monthTotalElement.textContent = monthTotal.toFixed(2);
 
       renderCalendar();
+      renderBudget();
     }
 
-    // Add a new expense.
+    // Save a new expense.
     form.addEventListener("submit", function(event) {
       event.preventDefault();
 
@@ -585,6 +711,20 @@
     // Change which expenses are shown.
     paymentFilter.addEventListener("change", renderExpenses);
 
+    // Save the monthly budget whenever it changes.
+    budgetInput.addEventListener("input", function() {
+      const value = Number(budgetInput.value);
+
+      if (budgetInput.value === "" || !Number.isFinite(value) || value < 0) {
+        budget = 0;
+      } else {
+        budget = value;
+      }
+
+      localStorage.setItem(BUDGET_KEY, budget);
+      renderBudget();
+    });
+
     // Clear all expenses after confirmation.
     clearAllButton.addEventListener("click", function() {
       const confirmed = confirm("Are you sure you want to clear all expenses?");
@@ -598,6 +738,7 @@
 
     // Show saved expenses when the page opens.
     renderExpenses();
+    renderBudget();
   </script>
 
 </body>
