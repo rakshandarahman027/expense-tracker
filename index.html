@@ -64,6 +64,12 @@
       cursor: pointer;
     }
 
+    .error {
+      color: #c00;
+      font-size: 14px;
+      margin: 0;
+    }
+
     .filter {
       margin-bottom: 16px;
     }
@@ -125,6 +131,8 @@
     <input type="text" id="note" placeholder="Note (optional)">
 
     <button type="submit">Add expense</button>
+
+    <p id="error-message" class="error"></p>
   </form>
 
   <h2>Expenses</h2>
@@ -146,8 +154,11 @@
   <script>
     const STORAGE_KEY = "expenseTracker.v1";
 
-    // Load saved expenses, or start with an empty list.
-    let expenses = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+    // Load saved expenses and remove invalid old entries.
+    let savedExpenses = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+    let expenses = savedExpenses.filter(expense => {
+      return Number.isFinite(Number(expense.amount)) && Number(expense.amount) > 0;
+    });
 
     const form = document.getElementById("expense-form");
     const amountInput = document.getElementById("amount");
@@ -158,6 +169,7 @@
     const expenseList = document.getElementById("expense-list");
     const totalElement = document.getElementById("total");
     const monthTotalElement = document.getElementById("month-total");
+    const errorMessage = document.getElementById("error-message");
 
     // Get today's date using the local timezone.
     function getLocalDate() {
@@ -188,9 +200,7 @@
         total += amount;
 
         // Calculate this month's total from all expenses.
-        if (
-          expense.date.startsWith(`${currentYear}-${currentMonth}`)
-        ) {
+        if (expense.date.startsWith(`${currentYear}-${currentMonth}`)) {
           monthTotal += amount;
         }
       });
@@ -226,6 +236,14 @@
     form.addEventListener("submit", function(event) {
       event.preventDefault();
 
+      const amount = Number(amountInput.value);
+
+      // Reject empty, non-numeric, zero, and negative amounts.
+      if (!amountInput.value || !Number.isFinite(amount) || amount <= 0) {
+        errorMessage.textContent = "Please enter an amount greater than 0";
+        return;
+      }
+
       const expense = {
         amount: amountInput.value,
         paymentMethod: paymentInput.value,
@@ -239,6 +257,7 @@
       localStorage.setItem(STORAGE_KEY, JSON.stringify(expenses));
 
       form.reset();
+      errorMessage.textContent = "";
       renderExpenses();
     });
 
