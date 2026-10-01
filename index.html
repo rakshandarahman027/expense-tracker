@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -74,6 +75,17 @@
       margin-bottom: 16px;
     }
 
+    .summary {
+      padding: 16px 0;
+    }
+
+    .summary-item {
+      padding: 8px 0;
+      border-bottom: 1px solid #ddd;
+      display: flex;
+      justify-content: space-between;
+    }
+
     .expense {
       padding: 16px 0;
       border-bottom: 1px solid #ddd;
@@ -88,6 +100,11 @@
       margin-top: 6px;
       color: #555;
       font-size: 14px;
+    }
+
+    .clear-button {
+      margin-top: 24px;
+      background: #c00;
     }
   </style>
 </head>
@@ -135,6 +152,9 @@
     <p id="error-message" class="error"></p>
   </form>
 
+  <h2>Summary by payment method</h2>
+  <div id="summary" class="summary"></div>
+
   <h2>Expenses</h2>
 
   <div class="filter">
@@ -150,6 +170,8 @@
   </div>
 
   <div id="expense-list"></div>
+
+  <button id="clear-all" class="clear-button">Clear all</button>
 
   <script>
     const STORAGE_KEY = "expenseTracker.v1";
@@ -170,6 +192,8 @@
     const totalElement = document.getElementById("total");
     const monthTotalElement = document.getElementById("month-total");
     const errorMessage = document.getElementById("error-message");
+    const summaryElement = document.getElementById("summary");
+    const clearAllButton = document.getElementById("clear-all");
 
     // Get today's date using the local timezone.
     function getLocalDate() {
@@ -181,12 +205,13 @@
       return `${year}-${month}-${day}`;
     }
 
-    // Display expenses and update both totals.
+    // Display expenses and update all totals and the summary.
     function renderExpenses() {
       expenseList.innerHTML = "";
 
       let total = 0;
       let monthTotal = 0;
+      const paymentTotals = {};
 
       const today = new Date();
       const currentYear = today.getFullYear();
@@ -203,7 +228,36 @@
         if (expense.date.startsWith(`${currentYear}-${currentMonth}`)) {
           monthTotal += amount;
         }
+
+        // Calculate total spent for each payment method.
+        if (!paymentTotals[expense.paymentMethod]) {
+          paymentTotals[expense.paymentMethod] = 0;
+        }
+
+        paymentTotals[expense.paymentMethod] += amount;
       });
+
+      // Sort payment methods from highest spending to lowest.
+      const sortedPayments = Object.entries(paymentTotals)
+        .sort((a, b) => b[1] - a[1]);
+
+      if (sortedPayments.length === 0) {
+        summaryElement.innerHTML = "<p>No expenses yet</p>";
+      } else {
+        summaryElement.innerHTML = "";
+
+        sortedPayments.forEach(([method, amount]) => {
+          const summaryItem = document.createElement("div");
+          summaryItem.className = "summary-item";
+
+          summaryItem.innerHTML = `
+            <span>${method}</span>
+            <strong>$${amount.toFixed(2)}</strong>
+          `;
+
+          summaryElement.appendChild(summaryItem);
+        });
+      }
 
       // Filter only the rows shown in the list.
       const filteredExpenses = expenses.filter(expense => {
@@ -264,9 +318,21 @@
     // Change which expenses are shown.
     paymentFilter.addEventListener("change", renderExpenses);
 
+    // Clear all expenses after confirmation.
+    clearAllButton.addEventListener("click", function() {
+      const confirmed = confirm("Are you sure you want to clear all expenses?");
+
+      if (confirmed) {
+        expenses = [];
+        localStorage.removeItem(STORAGE_KEY);
+        renderExpenses();
+      }
+    });
+
     // Show saved expenses when the page opens.
     renderExpenses();
   </script>
 
 </body>
 </html>
+```
