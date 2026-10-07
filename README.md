@@ -33,16 +33,3 @@ I pay for things using too many different methods — cash, Octopus, Alipay, car
 - Data saved in the browser via `localStorage` (survives refresh, but doesn't sync across devices)
 - Hosted on GitHub Pages
 
-## Known limitations
-
-- No cross-device sync — data lives in one browser
-- No editing or deleting individual expenses (only "clear all")
-- No CSV export
-
-## Next version
-
-- Edit and delete individual expenses
-- CSV export
-- Cloud sync
-
-
